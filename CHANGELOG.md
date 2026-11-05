@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1 - 2026-11-05
+
+- Live graph shows searches too: notes whose lines a search returned (the Grep tool, or grep and rg run in Bash) glow faintly in their own color, notes Claude opens glow bright, and the counter adds how many notes matched. With description-first routing many questions are answered from the description lines alone, so before this the graph often stayed dark. The hook now also runs after Grep and Bash; it reads only the paths at the start of the output lines, never the text, and still writes nothing outside the vault. Glob is not shown. A setting turns search matches off.
+
 ## 0.4.0 - 2026-11-05
 
 - Live graph: an Obsidian plugin (`obsidian/engram-live/`) that shows Claude's work on the vault in the graph view. A note Claude reads lights up in one color, an edited or new note in another; lit notes glow while Claude works, sparks run along their links, the other notes dim, and a counter shows notes read out of all notes. When Claude finishes its turn, everything fades out slowly.

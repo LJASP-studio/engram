@@ -1,9 +1,9 @@
 {
-  "description": "Live graph: tells the engram-live Obsidian plugin which vault notes Claude reads or writes, and when Claude finishes. Does nothing unless that plugin is enabled in a vault near the project.",
+  "description": "Live graph: tells the engram-live Obsidian plugin which vault notes Claude reads, writes or finds in a search, and when Claude finishes. Does nothing unless that plugin is enabled in a vault near the project.",
   "hooks": {
     "PostToolUse": [
       {
-        "matcher": "Read|Edit|Write|MultiEdit",
+        "matcher": "Read|Edit|Write|MultiEdit|Grep|Bash",
         "hooks": [
           {
             "type": "command",

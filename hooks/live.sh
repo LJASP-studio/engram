@@ -1,9 +1,11 @@
 #!/bin/sh
-# engram live graph: PostToolUse hook for Read, Edit and Write, and Stop hook.
+# engram live graph: PostToolUse hook for Read, Edit, Write, Grep and Bash, and Stop hook.
 #
 # When Claude reads or writes a note inside a vault whose Obsidian runs the engram-live
 # plugin, append one JSON line to that vault's .obsidian/plugins/engram-live/live.jsonl:
 #   {"v":1,"tool":"Read","path":"Projects/Inkwell/Inkwell.md","session":"<session id>"}
+# A search (the Grep tool, or grep and rg in Bash) adds one line per vault note its output
+# names, with "tool":"Grep" or "tool":"Bash"; the plugin shows those as search matches.
 # When Claude finishes a turn, append {"v":1,"event":"stop","session":"<session id>"} so
 # the plugin can let the lit notes fade out.
 # The plugin creates live.jsonl while it is enabled and removes it when it is disabled, so
@@ -58,9 +60,18 @@ function utf8(cp) {
 }
 # The string value of the first "key":"..." in the input. Inside JSON strings every quote is
 # escaped, so an unescaped "key": can only be a real key.
-function jstr(key,   rest, i, n, c, e, out, cp, lo) {
+function jstr(key) {
   if (!match(s, "\"" key "\"[ \t\r\n]*:[ \t\r\n]*\"")) return ""
-  rest = substr(s, RSTART + RLENGTH, 8192)
+  return unesc(substr(s, RSTART + RLENGTH, 8192))
+}
+# The still-escaped text of a long string value (grep output), found with one regex pass.
+function jraw(key,   rest) {
+  if (!match(s, "\"" key "\"[ \t\r\n]*:[ \t\r\n]*\"")) return ""
+  rest = substr(s, RSTART + RLENGTH)
+  return match(rest, /^([^"\\]|\\.)*/) ? substr(rest, 1, RLENGTH) : ""
+}
+# Unescape a JSON string body up to its closing quote. Only used on short strings.
+function unesc(rest,   i, n, c, e, out, cp, lo) {
   n = length(rest)
   out = ""
   for (i = 1; i <= n; i++) {
@@ -74,7 +85,7 @@ function jstr(key,   rest, i, n, c, e, out, cp, lo) {
         lo = hexval(substr(rest, i + 3, 4))
         if (lo >= 56320 && lo < 57344) { cp = 65536 + (cp - 55296) * 1024 + (lo - 56320); i += 6 }
       }
-      if (cp < 0) return ""
+      if (cp < 0) return out
       out = out utf8(cp)
     }
     else if (e == "n") out = out "\n"
@@ -83,7 +94,7 @@ function jstr(key,   rest, i, n, c, e, out, cp, lo) {
     else if (e == "b" || e == "f") out = out " "
     else out = out e
   }
-  return ""
+  return out
 }
 # Forward slashes, Git Bash drive form (/c/x) as c:/x, no empty, "." or ".." segments.
 function norm(p,   n, a, i, k, st, out) {
@@ -107,6 +118,38 @@ function jesc(v) {
   gsub(/[\001-\037]/, "", v)
   return v
 }
+# A path Claude touched: make it absolute and remember it once.
+function add(p) {
+  if (p == "") return
+  if (p !~ /^\// && p !~ /^[A-Za-z]:[\\\/]/ && p !~ /^\\\\/) {
+    if (cwd == "") return
+    p = cwd "/" p
+  }
+  p = norm(p)
+  if (!(p in seen)) { seen[p] = 1; paths[++np] = p }
+}
+# Note paths at the start of grep output lines: "path:12:text", "path-12-text", "path:text" or "path".
+function addtext(raw,   n, ln, i, line) {
+  if (raw == "") return
+  n = split(raw, ln, /\\n/)
+  for (i = 1; i <= n && np < 2000; i++) {
+    line = ln[i]
+    if (match(line, /\.md[:-]/)) add(unesc(substr(line, 1, RSTART + 2)))
+    else if (line ~ /\.md$/) add(unesc(line))
+  }
+}
+# Every string in the array value of "key" (the filenames of the Grep tool).
+function addarr(key,   rest, item) {
+  if (!match(s, "\"" key "\"[ \t\r\n]*:[ \t\r\n]*\\[")) return
+  rest = substr(s, RSTART + RLENGTH)
+  while (match(rest, /^[ \t\r\n,]*"([^"\\]|\\.)*"/)) {
+    item = substr(rest, 1, RLENGTH)
+    sub(/^[ \t\r\n,]*"/, "", item)
+    add(unesc(item))
+    rest = substr(rest, RLENGTH + 1)
+    if (np >= 2000) break
+  }
+}
 { s = s $0 "\n" }
 END {
   session = jesc(jstr("session_id"))
@@ -121,25 +164,26 @@ END {
     exit 0
   }
   tool = jstr("tool_name")
-  if (tool !~ /^(Read|Edit|Write|MultiEdit)$/) exit 0
-  path = jstr("file_path")
-  if (path == "") exit 0
-  if (path !~ /^\// && path !~ /^[A-Za-z]:[\\\/]/ && path !~ /^\\\\/) {
-    cwd = jstr("cwd")
-    if (cwd == "") exit 0
-    path = cwd "/" path
-  }
-  path = norm(path)
-  lpath = tolower(path)
+  cwd = jstr("cwd")
+  np = 0
+  if (tool ~ /^(Read|Edit|Write|MultiEdit)$/) add(jstr("file_path"))
+  else if (tool == "Grep") { addarr("filenames"); addtext(jraw("content")) }
+  else if (tool == "Bash") addtext(jraw("stdout"))
+  else exit 0
   for (j = 1; j <= nlogs; j++) {
     lf = logs[j]
     if (lf == "") continue
     vault = norm(substr(lf, 1, length(lf) - length(suffix)))
-    if (index(lpath, tolower(vault) "/") != 1) continue
-    rel = substr(path, length(vault) + 2)
-    if (rel == "" || rel ~ /^\./ || rel ~ /\/\./) continue
-    printf "{\"v\":1,\"tool\":\"%s\",\"path\":\"%s\",\"session\":\"%s\"}\n", jesc(tool), jesc(rel), session >> lf
-    close(lf)
+    lv = tolower(vault) "/"
+    wrote = 0
+    for (k = 1; k <= np; k++) {
+      if (index(tolower(paths[k]), lv) != 1) continue
+      rel = substr(paths[k], length(vault) + 2)
+      if (rel == "" || rel ~ /^\./ || rel ~ /\/\./) continue
+      printf "{\"v\":1,\"tool\":\"%s\",\"path\":\"%s\",\"session\":\"%s\"}\n", jesc(tool), jesc(rel), session >> lf
+      wrote = 1
+    }
+    if (wrote) close(lf)
   }
 }' 2>/dev/null
 

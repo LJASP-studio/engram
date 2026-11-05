@@ -253,6 +253,14 @@ cp "$LOG" "$WORK/out"
 expect_out '{"v":1,"tool":"Read","path":"Home.md","session":"s1"}' '{"v":1,"tool":"Edit","path":"Projects/App.md","session":"s1"}' \
   '{"v":1,"tool":"Write","path":"Projects/New.md","session":"s1"}' '{"v":1,"tool":"Read","path":"Rel.md","session":""}' \
   '{"v":1,"tool":"Read","path":"Projects/Çay \"ölçümü\".md","session":""}' '{"v":1,"event":"stop","session":"s2"}'
+: > "$LOG"
+hook "$L" '{"session_id":"s3","cwd":"'"$L"'","tool_name":"Grep","tool_input":{"pattern":"^description:","path":"notes","output_mode":"content","-A":2},"tool_response":{"mode":"content","filenames":[],"content":"notes/Home.md:2:description: Entry.\nnotes/Home.md-3-date: x\n--\nnotes/Projects/App.md:2:description: An app.\napp/src/x.ts:1:description"}}'
+hook "$L" '{"session_id":"s3","cwd":"'"$L"'","tool_name":"Grep","tool_input":{"pattern":"x","path":"notes"},"tool_response":{"mode":"files_with_matches","filenames":["notes/Projects/New.md","'"$L"'/notes/Rel.md","notes/.obsidian/x.md"]}}'
+hook "$L/app" '{"session_id":"s3","cwd":"'"$L"'","tool_name":"Bash","tool_input":{"command":"grep -rn x notes"},"tool_response":{"stdout":"'"$L"'/notes/Projects/App.md:4:x\nnotes/Home.md\nnot a path\n","stderr":""}}'
+cp "$LOG" "$WORK/out"
+expect_out '{"v":1,"tool":"Grep","path":"Home.md","session":"s3"}' '{"v":1,"tool":"Grep","path":"Projects/App.md","session":"s3"}' \
+  '{"v":1,"tool":"Grep","path":"Projects/New.md","session":"s3"}' '{"v":1,"tool":"Grep","path":"Rel.md","session":"s3"}' \
+  '{"v":1,"tool":"Bash","path":"Projects/App.md","session":"s3"}' '{"v":1,"tool":"Bash","path":"Home.md","session":"s3"}'
 head -c 1100000 /dev/zero | tr '\0' 'x' > "$LOG"
 hook "$L" "$(read_json Read "$L/notes/Home.md")"
 if [ "$(wc -c < "$LOG" | tr -d ' ')" -eq 1100000 ]; then echo "ok   $SCENARIO: no appending past 1 MB"
