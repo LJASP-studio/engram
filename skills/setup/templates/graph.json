@@ -1,0 +1,29 @@
+{
+  "collapse-filter": true,
+  "search": "",
+  "showTags": false,
+  "showAttachments": false,
+  "hideUnresolved": true,
+  "showOrphans": true,
+  "collapse-color-groups": false,
+  "colorGroups": [
+    { "query": "tag:#moc", "color": { "a": 1, "rgb": 13805910 } },
+    { "query": "path:\"{{projects}}\"", "color": { "a": 1, "rgb": 5219296 } },
+    { "query": "path:\"{{decisions}}\"", "color": { "a": 1, "rgb": 15770462 } },
+    { "query": "path:\"{{releases}}\"", "color": { "a": 1, "rgb": 10980346 } },
+    { "query": "path:\"{{tech}}\"", "color": { "a": 1, "rgb": 9741240 } },
+    { "query": "path:\"{{daily}}\"", "color": { "a": 1, "rgb": 15067115 } }
+  ],
+  "collapse-display": false,
+  "showArrow": false,
+  "textFadeMultiplier": -2,
+  "nodeSizeMultiplier": 1.6,
+  "lineSizeMultiplier": 0.5,
+  "collapse-forces": false,
+  "centerStrength": 0.6,
+  "repelStrength": 8,
+  "linkStrength": 1,
+  "linkDistance": 70,
+  "scale": 1,
+  "close": false
+}

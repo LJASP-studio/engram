@@ -1,0 +1,11 @@
+filters:
+  and:
+    - file.ext == "md"
+    - file.backlinks.isEmpty()
+views:
+  - type: table
+    name: "Orphans"
+    order:
+      - file.name
+      - file.folder
+      - note.description

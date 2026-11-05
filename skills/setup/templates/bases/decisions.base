@@ -1,0 +1,16 @@
+filters:
+  and:
+    - file.inFolder("{{decisions}}")
+    - file.ext == "md"
+    - not:
+        - file.hasTag("moc")
+views:
+  - type: table
+    name: "{{decisions}}"
+    order:
+      - file.name
+      - note.date
+      - note.description
+    sort:
+      - property: note.date
+        direction: DESC

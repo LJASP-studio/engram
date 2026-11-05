@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "language": "en",
+  "projectsRoot": "..",
+  "hub": "Home",
+  "log": "Log",
+  "views": "Views",
+  "folders": {
+    "projects": "Projects",
+    "decisions": "Decisions",
+    "releases": "Releases",
+    "tech": "Tech",
+    "daily": "Daily"
+  },
+  "fields": { "date": "date", "source": "source", "code": "code" },
+  "tags": { "decision": "decision", "release": "release", "moc": "moc", "daily": "daily" },
+  "lastScan": {}
+}

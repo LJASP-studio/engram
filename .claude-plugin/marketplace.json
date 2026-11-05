@@ -1,0 +1,14 @@
+{
+  "name": "engram",
+  "owner": {
+    "name": "muazfurkan"
+  },
+  "description": "Marketplace for the engram plugin.",
+  "plugins": [
+    {
+      "name": "engram",
+      "source": "./",
+      "description": "Portable second brain: an Obsidian vault per machine with notes that point to code."
+    }
+  ]
+}
