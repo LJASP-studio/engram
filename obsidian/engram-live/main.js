@@ -39,7 +39,6 @@ const MATCH_STRENGTH = 0.5; // a search match glows at half the strength of a re
 const DEFAULTS = {
   readColor: '#f5b83d',
   writeColor: '#4fd1a5',
-  matchColor: '#cfe0ff',
   matches: true,
   fadeSeconds: 6,
   signals: true,
@@ -54,10 +53,8 @@ const STRINGS = {
     read: 'notes read',
     written: 'written',
     matched: 'matched in search',
-    matchColor: 'Search color',
-    matchColorDesc: 'A note a search found but Claude did not open.',
     matches: 'Show search matches',
-    matchesDesc: 'Notes whose lines a search returned (the Grep tool, or grep and rg in the shell) glow faintly.',
+    matchesDesc: 'Notes whose lines a search returned (the Grep tool, or grep and rg in the shell) glow faintly in their own color.',
     reset: 'Reset the live graph',
     wrongDir: 'engram live graph: install it in .obsidian/plugins/engram-live, or Claude Code\'s hook cannot find it.',
     readColor: 'Read color',
@@ -81,10 +78,8 @@ const STRINGS = {
     read: 'okunan not',
     written: 'yazılan',
     matched: 'aramada eşleşti',
-    matchColor: 'Arama rengi',
-    matchColorDesc: 'Bir aramanın bulduğu ama Claude\'un açmadığı not.',
     matches: 'Arama eşleşmelerini göster',
-    matchesDesc: 'Bir aramanın satırlarını döndürdüğü notlar (Grep aracı ya da kabuktaki grep ve rg) soluk yanar.',
+    matchesDesc: 'Bir aramanın satırlarını döndürdüğü notlar (Grep aracı ya da kabuktaki grep ve rg) kendi renklerinde soluk yanar.',
     reset: 'Canlı grafiği sıfırla',
     wrongDir: 'engram live graph: .obsidian/plugins/engram-live klasörüne kurun, yoksa Claude Code\'un hook\'u eklentiyi bulamaz.',
     readColor: 'Okuma rengi',
@@ -210,11 +205,12 @@ class EngramLive extends Plugin {
   applyColors() {
     this.readRgb = hexToRgb(this.settings.readColor, 0xf5b83d);
     this.writeRgb = hexToRgb(this.settings.writeColor, 0x4fd1a5);
-    this.matchRgb = hexToRgb(this.settings.matchColor, 0xcfe0ff);
   }
 
-  colorOf(st) {
-    return st.kind === 'write' ? this.writeRgb : st.kind === 'match' ? this.matchRgb : this.readRgb;
+  // A search match keeps the note's own color (remembered from the last frame); reads and writes use theirs.
+  colorOf(st, node) {
+    if (st.kind === 'match') return node && typeof node.engramBase === 'number' ? node.engramBase : this.readRgb;
+    return st.kind === 'write' ? this.writeRgb : this.readRgb;
   }
 
   strengthOf(st) {
@@ -667,9 +663,10 @@ class EngramLive extends Plugin {
     if (level <= 0) return base;
     const st = this.notes.get(node.id);
     if (st) {
+      node.engramBase = base.rgb;
       const g = clamp01((this.glowOf(st, now) + this.burstOf(st, now)) * level * this.strengthOf(st));
       const a = base.a * this.dimOthers(level);
-      return { a: a + (1 - a) * g, rgb: mixRgb(base.rgb, this.colorOf(st), clamp01(g * 1.15)) };
+      return { a: a + (1 - a) * g, rgb: mixRgb(base.rgb, this.colorOf(st, node), clamp01(g * 1.15)) };
     }
     const d = this.dimOthers(level);
     return d < 1 ? { a: base.a * d, rgb: base.rgb } : base;
@@ -717,7 +714,7 @@ class EngramLive extends Plugin {
       else r.hanger.addChild(g);
       this.glows.set(node, g);
     }
-    const color = this.colorOf(st);
+    const color = this.colorOf(st, node);
     const strength = this.strengthOf(st);
     const amount = clamp01(this.glowOf(st, now) + 0.6 * this.burstOf(st, now)) * level * strength;
     const size = node.getSize();
@@ -787,7 +784,6 @@ class EngramLive extends Plugin {
     const total = this.app.vault.getMarkdownFiles().length;
     el.style.setProperty('--engram-live-read', this.settings.readColor);
     el.style.setProperty('--engram-live-write', this.settings.writeColor);
-    el.style.setProperty('--engram-live-match', this.settings.matchColor);
     el.empty();
     const count = el.createDiv({ cls: 'engram-live-count' });
     count.createSpan({ cls: 'engram-live-reads', text: String(reads) });
@@ -820,8 +816,6 @@ class LiveSettings extends PluginSettingTab {
       .addColorPicker((c) => c.setValue(s.readColor).onChange((v) => { s.readColor = v; save(); }));
     new Setting(containerEl).setName(t.writeColor).setDesc(t.writeColorDesc)
       .addColorPicker((c) => c.setValue(s.writeColor).onChange((v) => { s.writeColor = v; save(); }));
-    new Setting(containerEl).setName(t.matchColor).setDesc(t.matchColorDesc)
-      .addColorPicker((c) => c.setValue(s.matchColor).onChange((v) => { s.matchColor = v; save(); }));
     new Setting(containerEl).setName(t.matches).setDesc(t.matchesDesc)
       .addToggle((c) => c.setValue(s.matches).onChange((v) => { s.matches = v; save(); }));
     new Setting(containerEl).setName(t.fade).setDesc(t.fadeDesc)

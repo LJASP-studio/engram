@@ -96,7 +96,7 @@ Before you run engram on a work computer:
 
 ## Live graph
 
-An optional Obsidian plugin that shows Claude's work on the vault in the graph view, for demos and for seeing what Claude actually used. A note whose lines a search returned glows faintly; a note Claude reads lights up bright, a note it edits or creates in a third color. Lit notes glow while Claude works and sparks run along the links of the notes it opened; the other notes dim, and a counter in the corner shows the notes read out of all notes in the vault and how many a search matched ("3 / 372 notes read · 40 matched in search"). When Claude finishes its turn, everything fades out slowly.
+An optional Obsidian plugin that shows Claude's work on the vault in the graph view, for demos and for seeing what Claude actually used. A note whose lines a search returned glows faintly in its own color; a note Claude reads lights up bright, a note it edits or creates in a third color. Lit notes glow while Claude works and sparks run along the links of the notes it opened; the other notes dim, and a counter in the corner shows the notes read out of all notes in the vault and how many a search matched ("3 / 372 notes read · 40 matched in search"). When Claude finishes its turn, everything fades out slowly.
 
 Turn it on with `/engram:setup live`, which copies the plugin into `<vault>/.obsidian/plugins/engram-live/`. Then, in Obsidian, open Settings → Community plugins, turn off Restricted mode, enable **engram live graph** and open the graph view. The plugin's settings hold the colors, search matches on or off, the fade time, the sparks, the dimming and the counter; the command *Reset the live graph* fades it out at once. To turn it off, disable the plugin.
 

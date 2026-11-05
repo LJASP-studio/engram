@@ -33,7 +33,7 @@
 }
 
 .engram-live-matches {
-  color: var(--engram-live-match);
+  color: var(--text-normal);
 }
 
 @keyframes engram-live-in {
