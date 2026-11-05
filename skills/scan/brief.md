@@ -27,7 +27,7 @@ Skip dependencies, build output, lock files, generated code, binaries, `.env*`, 
 - One note per release (tag or changelog entry), dated by the tag or entry.
 - One tech note per framework, library or service that matters to the project.
 
-Each note: one subject, two to six sentences, safe to show anyone. Every note needs a source (file path, `repo@commit`, tag or URL) and a date taken from that source: the changelog date, tag date, commit date, the date in the document, or the date the cited file was added. Never invent a date or a fact. If you cannot source it, leave it out. For an existing note, propose an update instead of a new note.
+Each note: one subject, two to six sentences, safe to show anyone. Put related notes in `links:`, not in a `Related:` line in the body. For an update of a hub or index note, write only its lead text; the merge keeps its content list and adds new notes to it. Every note needs a source (file path, `repo@commit`, tag or URL) and a date taken from that source: the changelog date, tag date, commit date, the date in the document, or the date the cited file was added. Never invent a date or a fact. If you cannot source it, leave it out. For an existing note, propose an update instead of a new note.
 
 ## Answer format
 Return only blocks like this, nothing else:
