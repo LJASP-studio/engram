@@ -15,4 +15,6 @@ Prints tide times for a harbour. Written in [[Go]] 1.23 with the standard librar
 
 Releases: [[tide-cli 1.0.0]]
 
+Status: [[tide-cli status]]
+
 Up: [[Projects]]

@@ -11,9 +11,20 @@
     "releases": "Releases",
     "tech": "Tech",
     "concepts": "Concepts",
-    "daily": "Daily"
+    "daily": "Daily",
+    "proposals": "Proposals"
   },
   "fields": { "date": "date", "source": "source", "code": "code" },
-  "tags": { "decision": "decision", "release": "release", "concept": "concept", "moc": "moc", "daily": "daily" },
+  "tags": { "decision": "decision", "release": "release", "concept": "concept", "moc": "moc", "daily": "daily", "status": "status" },
+  "privacy": {
+    "projects": {},
+    "exclude": [
+      ".env", ".env.*",
+      "*.pem", "*.key", "*.p8", "*.p12", "*.pfx", "*.crt", "*.cer", "*.jks", "*.keystore", "*.ppk", "*.kdbx",
+      "id_rsa*", "id_ecdsa*", "id_ed25519*",
+      ".netrc", ".npmrc", ".pypirc", ".git-credentials", "credentials.json", "*.tfvars",
+      "secrets.json", "secrets.yml", "secrets.yaml"
+    ]
+  },
   "lastScan": {}
 }

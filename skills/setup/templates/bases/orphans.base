@@ -2,6 +2,8 @@ filters:
   and:
     - file.ext == "md"
     - file.backlinks.isEmpty()
+    - not:
+        - file.inFolder("{{proposals}}")
 views:
   - type: table
     name: "Orphans"

@@ -1,8 +1,9 @@
 filters:
   and:
     - file.ext == "md"
-    - file.links.isEmpty()
     - file.backlinks.isEmpty()
+    - not:
+        - file.inFolder("Proposals")
 views:
   - type: table
     name: "Orphans"

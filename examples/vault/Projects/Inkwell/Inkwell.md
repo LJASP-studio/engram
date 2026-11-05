@@ -18,4 +18,6 @@ No app entry file, storage module or tests exist yet.
 
 Releases: [[Inkwell 0.1.0]] · [[Inkwell 0.2.0]]
 
+Status: [[Inkwell status]]
+
 Up: [[Projects]]

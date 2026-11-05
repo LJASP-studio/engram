@@ -18,4 +18,4 @@ This vault is the long-term memory for the projects in this folder. Each note sa
 ## Projects
 
 ## How to read it
-First grep the `description:` lines (the `code:` paths come with them) and go to the code. Home and the folder indexes are for broad questions and for browsing. Open at most three notes. Tables in `Views/`. Every change is listed in [[Log]].
+First grep the `description:` lines (the `code:` paths come with them) and go to the code. Home and the folder indexes are for broad questions and for browsing; each project hub links a status note (now, next, open questions, what did not work). Open at most three notes. Tables in `Views/`. Every change is listed in [[Log]].

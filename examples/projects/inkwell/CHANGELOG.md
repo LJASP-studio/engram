@@ -1,5 +1,8 @@
 # Changelog
 
+## [Unreleased]
+- Export to HTML (`src/export/`, not started).
+
 ## [0.2.0] - 2026-02-03
 - Sync with a self-hosted server (`src/sync/`).
 - Undo history survives a restart.
