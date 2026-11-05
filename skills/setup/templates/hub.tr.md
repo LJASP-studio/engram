@@ -18,4 +18,4 @@ Bu kasa, bu klasördeki projelerin uzun süreli belleği. Her not tek bir şey s
 ## Projeler
 
 ## Nasıl okunur
-Home, sonra klasör dizini, sonra en fazla üç not, sonra notların gösterdiği kod yolları. Tablolar `Views/` klasöründe. Her değişiklik [[Log]] notunda.
+Önce `description:` satırlarını ara (`code:` yolları da gelir) ve koda git. Home ve klasör dizinleri geniş sorular ve gezinmek için. En fazla üç not aç. Tablolar `Views/` klasöründe. Her değişiklik [[Log]] notunda.
