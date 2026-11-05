@@ -12,6 +12,7 @@ This vault is the long-term memory for the projects in this folder. Each note sa
 - [[Decisions]]
 - [[Releases]]
 - [[Tech]]
+- [[Concepts]]
 - [[Daily]]
 
 ## Projects

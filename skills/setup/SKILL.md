@@ -31,7 +31,7 @@ Replace `{{today}}` with today's date and the other `{{…}}` placeholders with 
 8. `<vault>/.gitignore` from `templates/gitignore`.
 
 ## 3b. Existing vault
-Do not move or rename anything. Ask which existing folders play the roles in `folders` (projects, decisions, releases, tech, daily) and which note is the hub; write `.engram.json` with those names. Create only what is missing: role folders, MOCs, log, views, `.gitignore`. Keep `.obsidian/` as it is. Notes without `description` or a date are fixed later with `/engram:check`.
+Do not move or rename anything. Ask which existing folders play the roles in `folders` (projects, decisions, releases, tech, concepts, daily) and which note is the hub; write `.engram.json` with those names. Create only what is missing: role folders, MOCs, log, views, `.gitignore`. Keep `.obsidian/` as it is. Notes without `description` or a date are fixed later with `/engram:check`.
 
 ## 4. Local git
 In the vault: if `git -C <vault> rev-parse --show-toplevel` is not the vault itself, run `git -C <vault> init -b main`. Check `git -C <vault> remote` is empty; if a remote exists, tell the user and do not touch it. Commit: `git -C <vault> add -A` then `git -C <vault> commit -m "chore: set up the vault"`.

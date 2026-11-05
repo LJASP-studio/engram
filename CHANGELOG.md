@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0 - 2026-11-05
+
+- Concept notes: a `Concepts` folder for themes that notes in two or more projects share (security, privacy, determinism, localisation). Conventions, layout, hub templates, graph preset and the example vault have it; `scan` writes concept notes after the merge and `note` adds new notes to them.
+- `scan` splits a large project into two briefs (documents and code map; history, decisions and data) so a subagent does not run out of context.
+
 ## 0.1.0 - 2026-11-05
 
 - First version of the `engram` plugin: `setup` (set up a vault), `scan` (scan projects), `note` (write a note), `check` (health check).

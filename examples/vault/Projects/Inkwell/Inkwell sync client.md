@@ -9,4 +9,4 @@ tags: [module]
 
 `pushRevision(serverUrl, docId, body)` sends an HTTP PUT to `<server>/docs/<docId>`. There is no pull, no conflict handling and no response check. Added in [[Inkwell 0.2.0]].
 
-Related: [[Inkwell]]
+Related: [[Inkwell]] · [[Network access]]

@@ -12,6 +12,7 @@
     { "query": "path:\"{{decisions}}\"", "color": { "a": 1, "rgb": 15770462 } },
     { "query": "path:\"{{releases}}\"", "color": { "a": 1, "rgb": 10980346 } },
     { "query": "path:\"{{tech}}\"", "color": { "a": 1, "rgb": 9741240 } },
+    { "query": "path:\"{{concepts}}\"", "color": { "a": 1, "rgb": 16750592 } },
     { "query": "path:\"{{daily}}\"", "color": { "a": 1, "rgb": 15067115 } }
   ],
   "collapse-display": false,

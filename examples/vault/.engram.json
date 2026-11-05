@@ -10,10 +10,11 @@
     "decisions": "Decisions",
     "releases": "Releases",
     "tech": "Tech",
+    "concepts": "Concepts",
     "daily": "Daily"
   },
   "fields": { "date": "date", "source": "source", "code": "code" },
-  "tags": { "decision": "decision", "release": "release", "moc": "moc", "daily": "daily" },
+  "tags": { "decision": "decision", "release": "release", "concept": "concept", "moc": "moc", "daily": "daily" },
   "lastScan": {
     "inkwell": { "commit": null, "date": "2026-11-05" },
     "tide-cli": { "commit": null, "date": "2026-11-05" }

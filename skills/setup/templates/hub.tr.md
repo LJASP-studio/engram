@@ -12,6 +12,7 @@ Bu kasa, bu klasördeki projelerin uzun süreli belleği. Her not tek bir şey s
 - [[Decisions]]
 - [[Releases]]
 - [[Tech]]
+- [[Concepts]]
 - [[Daily]]
 
 ## Projeler

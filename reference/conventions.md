@@ -19,6 +19,7 @@ Each vault has a `.engram.json` at its root. Skills read it first and never gues
     "decisions": "Decisions",
     "releases": "Releases",
     "tech": "Tech",
+    "concepts": "Concepts",
     "daily": "Daily"
   },
   "lastScan": {}
@@ -65,6 +66,7 @@ Related: [[Project hub]] · [[Other note]]
 - MOC (map of content): one per folder, named after the folder, inside it: `Decisions/Decisions.md`. Tag `moc`. One line per note in the folder: `- [[Note]]: description`. Subfolders get their own MOC, linked from the parent MOC.
 - Project hub: `Projects/<Name>/<Name>.md`. What the project is, stack, how to run and test, a short code map (`code:` paths), and links to its feature, decision and release notes.
 - Tech notes: one per tool or framework, shared by all projects that use it. They link every project that uses them; these cross-project hubs are what make the graph look like a brain.
+- Concept notes: one per theme that cuts across projects and folders (a principle, a quality such as security or privacy, a technique such as determinism or localisation). Write one only when notes in two or more projects already show the theme. The body says in two or three sentences what the theme means here, then lists the notes that show it, grouped by project, one line each with what that note adds. `source` lists the sources of those notes; `code` lists the main paths; tag `concept`. A vault older than this rule may lack the concepts folder: add it to `.engram.json` and create its MOC before writing the first concept note.
 - Daily note: `<daily>/YYYY-MM-DD.md`, tag `daily`, heading `# YYYY-MM-DD`, a one- or two-line summary and a `Related:` line linking every note written or changed that day.
 - Views: the views folder holds Obsidian Bases tables (decision table, release table, orphans) and no notes.
 - Log: `<log>.md` at the root. Append only, one line per change, plain text (no wikilinks, so it does not become a giant graph node):
@@ -72,14 +74,14 @@ Related: [[Project hub]] · [[Other note]]
 
 ## Retrieval order (what the routing block tells Claude)
 
-1. Hub, then the folder MOC that fits the question.
+1. Hub, then the folder MOC that fits the question. A question that spans projects ("where do we handle X anywhere") starts at the concepts MOC.
 2. If that is not enough, grep `^description:` across the vault.
 3. Open at most three notes.
 4. Open the code paths those notes name. Search the code only if the notes do not answer.
 
 ## Types
 
-Used in the log and in tags: `decision`, `release`, `feature`, `module`, `fix`, `research`, `tech`, plus `scan`, `maintenance` and `setup` for vault work. Vault commits use Conventional Commits: `docs: add <Title>`, `docs: update <Title>`, `docs: scan <projects>`, `chore: vault maintenance`, `chore: set up the vault`.
+Used in the log and in tags: `decision`, `release`, `feature`, `module`, `fix`, `research`, `tech`, `concept`, plus `scan`, `maintenance` and `setup` for vault work. Vault commits use Conventional Commits: `docs: add <Title>`, `docs: update <Title>`, `docs: scan <projects>`, `chore: vault maintenance`, `chore: set up the vault`.
 
 ## Writing rules
 

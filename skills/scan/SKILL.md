@@ -20,13 +20,16 @@ Under the projects root (from `.engram.json`), each top-level folder except the 
 - Collect the vault notes that already belong to the project: Grep `^description:` in its project folder, and Grep the project name across the vault. These go into the brief so the subagent proposes updates, not duplicates.
 
 ## 3. One subagent per project
-Fill `${CLAUDE_SKILL_DIR}/brief.md` for each project and start the subagents in parallel, at most five at a time. Use a read-only agent (the Explore agent where available); subagents never write files. Each returns proposed notes in the brief's format.
+Fill `${CLAUDE_SKILL_DIR}/brief.md` for each project and start the subagents in parallel, at most five at a time. A large project (roughly 200+ commits or 15+ documents) gets two briefs with a stated slice each, so neither subagent runs out of context: documents and code map (hub, features, modules, tech) in one; git history, decisions, milestones and data in the other. Tell each which notes the other writes. Use a read-only agent (the Explore agent where available); subagents never write files. Each returns proposed notes in the brief's format.
 
 ## 4. Merge and write
 - Tech notes: one per tool across all projects. Merge proposals for the same tool and link every project that uses it.
 - Before each write, search the vault: Glob the title, Grep similar titles and the `description:` lines. If a note on the subject exists, update it (add facts, extend the source and code lists, keep its date unless the fact is new) instead of writing another.
 - Drop any proposal without a source, with an invented date, or with secrets, customer or personal data.
 - Write new notes in the right folder with full frontmatter (conventions). Project hub: `<projects>/<Name>/<Name>.md`; features and modules next to it.
+
+## 4b. Concept notes
+After the merge, look across projects for themes that notes in two or more projects already show (the conventions' concept notes: principles, qualities such as security or privacy, techniques such as determinism or localisation). For each theme the notes support, write or update one concept note in the concepts folder, listing those notes grouped by project. Add the concept link to each listed note's `Related:` line. Never write a concept that only one project shows, and never claim a theme a note does not state.
 
 ## 5. Indexes, daily note, log, state
 - Add a line `- [[Note]]: description` to each touched folder's MOC; new project hubs go into the projects MOC and the hub's projects list.

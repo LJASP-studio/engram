@@ -23,6 +23,7 @@ projects/                 your projects folder (work or personal)
     ├── Decisions/        2026-03-14 Sessions move to Redis.md
     ├── Releases/         api v2.1.0.md
     ├── Tech/             one note per tool, linked from every project that uses it
+    ├── Concepts/         one note per theme shared by projects (security, privacy, determinism)
     ├── Daily/            one note per day, linking what changed that day
     ├── Views/            Obsidian Bases tables: decisions, releases, orphans
     └── Log.md            append-only change log

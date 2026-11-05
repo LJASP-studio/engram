@@ -9,4 +9,4 @@ tags: [module]
 
 `Next(harbour string) string` returns fixed times today. The package comment and the 1.0.0 changelog describe reading tide tables and caching them for an hour; start here when adding real data or the cache.
 
-Related: [[tide-cli]] · [[tide command]]
+Related: [[tide-cli]] · [[tide command]] · [[Network access]]
