@@ -4,6 +4,7 @@
 
 - Concept notes: a `Concepts` folder for themes that notes in two or more projects share (security, privacy, determinism, localisation). Conventions, layout, hub templates, graph preset and the example vault have it; `scan` writes concept notes after the merge and `note` adds new notes to them.
 - `scan` splits a large project into two briefs (documents and code map; history, decisions and data) so a subagent does not run out of context.
+- Routing block and retrieval order are description-first: grep `^description:` with the `code:` lines, and read the hub and folder indexes only for broad questions. Measured on a real workspace (13 questions, two runs per question and order, against the same workspace without a vault), the old hub-first order used 18 percent fewer tokens and was cheaper on only 5 of 13 questions; description-first used 46 percent fewer tokens, 54 percent lower cost and 7 turns instead of 10, cheaper on 11 of 13.
 - Scan brief: related notes go in `links:` only, and a hub update carries only its lead text, so merged hubs do not get a second content list.
 
 ## 0.1.0 - 2026-11-05

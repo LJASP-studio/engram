@@ -37,7 +37,7 @@ Do not move or rename anything. Ask which existing folders play the roles in `fo
 In the vault: if `git -C <vault> rev-parse --show-toplevel` is not the vault itself, run `git -C <vault> init -b main`. Check `git -C <vault> remote` is empty; if a remote exists, tell the user and do not touch it. Commit: `git -C <vault> add -A` then `git -C <vault> commit -m "chore: set up the vault"`.
 
 ## 5. Routing block
-Fill `routing.<language>.md` (`{{vault}}`, `{{hub}}`). In `<projects root>/CLAUDE.md`, replace the text between `<!-- engram:start -->` and `<!-- engram:end -->` if it is there, else append the block at the end. Create the file if it does not exist. Keep everything else in the file.
+Fill `routing.<language>.md` (`{{vault}}`, `{{hub}}`, `{{concepts}}`). In `<projects root>/CLAUDE.md`, replace the text between `<!-- engram:start -->` and `<!-- engram:end -->` if it is there, else append the block at the end. Create the file if it does not exist. Keep everything else in the file.
 
 ## 6. Read-deny rules
 Build the list from `templates/deny.json`: everything in `always`, plus each `ifFound` group whose file patterns Glob finds at `<pattern>`, `*/<pattern>` or `*/*/<pattern>` under the root. Show the list and ask once before writing. Merge it into `permissions.deny` of `<projects root>/.claude/settings.json`: create the file if missing, keep every other key, add no duplicates.

@@ -74,10 +74,12 @@ Related: [[Project hub]] · [[Other note]]
 
 ## Retrieval order (what the routing block tells Claude)
 
-1. Hub, then the folder MOC that fits the question. A question that spans projects ("where do we handle X anywhere") starts at the concepts MOC.
-2. If that is not enough, grep `^description:` across the vault.
+1. Grep `^description:` across the vault for the question's key words, with four lines of context so `source:` and `code:` come in the same result. Most questions end here: open the code paths.
+2. If nothing matches or the question is broad, the hub, then the folder MOC that fits. A question that spans projects ("where do we handle X anywhere") starts at the concepts MOC.
 3. Open at most three notes.
-4. Open the code paths those notes name. Search the code only if the notes do not answer.
+4. Search the code only if the notes do not answer.
+
+Every extra step is a full model turn that re-reads the whole context, so the order is chosen to reach the code in as few turns as possible. Keep `description` the first frontmatter key and `code` within the next four lines, so one grep returns both.
 
 ## Types
 

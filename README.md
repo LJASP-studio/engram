@@ -41,7 +41,7 @@ tags: [decision]
 ---
 ```
 
-The routing block tells Claude to read the hub, then the folder index, then grep the `description:` lines, then open at most three notes and jump to the code paths they name. Folder indexes list one line per note with its description, so the right note is usually found without opening any other.
+The routing block tells Claude to grep the `description:` lines first (the `code:` paths come with them), and to read the hub and a folder index only when nothing matches or the question is broad; then to open at most three notes and jump to the code paths they name. Every extra step is a full model turn, so the shortest path to the right file is also the cheapest.
 
 ## Skills
 
