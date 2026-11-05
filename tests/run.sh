@@ -1,11 +1,12 @@
 #!/bin/sh
-# Tests for skills/check/scripts/lint.sh and skills/scan/scripts/edited.sh on synthetic vaults.
+# Tests for skills/check/scripts/lint.sh, skills/scan/scripts/edited.sh and hooks/live.sh on synthetic vaults.
 # POSIX sh; needs git. Usage: sh tests/run.sh
 
 set -eu
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 LINT="$ROOT/skills/check/scripts/lint.sh"
 EDITED="$ROOT/skills/scan/scripts/edited.sh"
+LIVE="$ROOT/hooks/live.sh"
 WORK=$(mktemp -d 2>/dev/null || mktemp -d -t engram-test)
 trap 'rm -rf "$WORK"' EXIT INT TERM
 FAILS=0
@@ -224,5 +225,37 @@ for c in MISSING_FRONTMATTER MISSING_DESCRIPTION MISSING_DATE MISSING_SOURCE BRO
          CODE_PATH_MISSING NO_MOC LIKELY_DUPLICATE INFERRED_UNMARKED PRIVACY_UNSET PRIVACY_MISMATCH; do
   expect $c 0
 done
+
+# 7. Live graph hook: one line per note read or written inside a vault whose plugin is on.
+SCENARIO=live
+L="$WORK/live"
+LOG="$L/notes/.obsidian/plugins/engram-live/live.jsonl"
+mkdir -p "$L/notes/Projects" "$L/notes-old" "$L/app/src"
+hook() { # hook PROJECT_DIR JSON
+  printf '%s' "$2" | CLAUDE_PROJECT_DIR="$1" sh "$LIVE"
+}
+read_json() { printf '{"session_id":"s1","cwd":"%s","tool_name":"%s","tool_input":{"file_path":"%s"}}' "$L" "$1" "$2"; }
+hook "$L" "$(read_json Read "$L/notes/Home.md")"
+if [ -e "$LOG" ]; then echo "FAIL $SCENARIO: wrote without the plugin's file"; FAILS=$((FAILS + 1))
+else echo "ok   $SCENARIO: nothing without the plugin's file"; fi
+mkdir -p "$(dirname "$LOG")"; : > "$LOG"
+hook "$L" "$(read_json Read "$L/notes/Home.md")"
+hook "$L/app/src" "$(read_json Edit "$L/notes/Projects/App.md")"
+hook "$L" "$(read_json Write "$L/notes/./Projects/../Projects/New.md")"
+hook "$L" '{"cwd":"'"$L"'","tool_name":"Read","tool_input":{"file_path":"notes/Rel.md"}}'
+hook "$L" '{"tool_name":"Read","tool_input":{"file_path":"'"$L"'/notes/Projects/Çay \"ölçümü\".md"},"tool_response":{"file":{"content":"\"file_path\":\"x\""}}}'
+hook "$L" '{"tool_name":"Grep","tool_input":{"pattern":"x","path":"'"$L"'/notes"}}'
+hook "$L" "$(read_json Read "$L/app/src/x.ts")"
+hook "$L" "$(read_json Read "$L/notes-old/Home.md")"
+hook "$L" "$(read_json Read "$L/notes/.obsidian/graph.json")"
+hook "$L/app" '{"session_id":"s2","hook_event_name":"Stop","stop_hook_active":false}'
+cp "$LOG" "$WORK/out"
+expect_out '{"v":1,"tool":"Read","path":"Home.md","session":"s1"}' '{"v":1,"tool":"Edit","path":"Projects/App.md","session":"s1"}' \
+  '{"v":1,"tool":"Write","path":"Projects/New.md","session":"s1"}' '{"v":1,"tool":"Read","path":"Rel.md","session":""}' \
+  '{"v":1,"tool":"Read","path":"Projects/Çay \"ölçümü\".md","session":""}' '{"v":1,"event":"stop","session":"s2"}'
+head -c 1100000 /dev/zero | tr '\0' 'x' > "$LOG"
+hook "$L" "$(read_json Read "$L/notes/Home.md")"
+if [ "$(wc -c < "$LOG" | tr -d ' ')" -eq 1100000 ]; then echo "ok   $SCENARIO: no appending past 1 MB"
+else echo "FAIL $SCENARIO: appended past 1 MB"; FAILS=$((FAILS + 1)); fi
 
 if [ "$FAILS" -eq 0 ]; then echo "all tests passed"; else echo "$FAILS failed"; exit 1; fi

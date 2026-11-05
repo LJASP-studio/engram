@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0 - 2026-11-05
+
+- Live graph: an Obsidian plugin (`obsidian/engram-live/`) that shows Claude's work on the vault in the graph view. A note Claude reads lights up in one color, an edited or new note in another; lit notes glow while Claude works, sparks run along their links, the other notes dim, and a counter shows notes read out of all notes. When Claude finishes its turn, everything fades out slowly.
+- The plugin gets its events from a new hook in this plugin (`hooks/hooks.json`, `hooks/live.sh`): after Read, Edit and Write, and when a turn stops, it appends one line (tool, path inside the vault, session id) to `live.jsonl` in the Obsidian plugin's folder. The hook runs in the background, prints nothing and does nothing unless that file exists, which the Obsidian plugin creates only while it is enabled. No network, no file contents, no paths outside the vault; it stops appending past 1 MB.
+- `/engram:setup live` copies the Obsidian plugin into the vault.
+
 ## 0.3.0 - 2026-11-05
 
 - Privacy per machine: `setup` asks for each project folder whether its contents may be read (`full`), only its file names (`structure`, notes marked `visibility: internal`) or nothing (`none`), plus file patterns never read anywhere (`.env`, keys, certificates, credentials). Stored in `.engram.json` under `privacy` and written as `Read` deny rules into the projects folder's `.claude/settings.json`. `/engram:setup privacy` changes both; `scan` asks about new folders before reading them.

@@ -1,7 +1,7 @@
 ---
 name: setup
-description: Set up an engram vault in the current projects folder (layout, hub, MOCs, privacy per project, routing block, read-deny rules, Obsidian presets, local git). `privacy` re-runs only the privacy step.
-argument-hint: "[tr|en] [vault-folder] | privacy"
+description: Set up an engram vault in the current projects folder (layout, hub, MOCs, privacy per project, routing block, read-deny rules, Obsidian presets, local git). `privacy` re-runs only the privacy step; `live` adds the live graph plugin.
+argument-hint: "[tr|en] [vault-folder] | privacy | live"
 disable-model-invocation: true
 ---
 
@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 Run from the folder that holds the projects (for example `~/code` or `D:/code`). The vault becomes a subfolder of it. Read `${CLAUDE_SKILL_DIR}/../../reference/conventions.md` first. Templates are in `${CLAUDE_SKILL_DIR}/templates/`. Use Claude's own tools (Read, Write, Edit, Glob, Grep) for files and JSON; use the shell only for `git`. Never add a git remote and never push.
 
-Arguments: `$ARGUMENTS` (optional language `tr` or `en`, optional vault folder name). If the arguments are `privacy`, find the vault (conventions), run step 6 only, commit `.engram.json` (`chore: update privacy`) and report.
+Arguments: `$ARGUMENTS` (optional language `tr` or `en`, optional vault folder name). If the arguments are `privacy`, find the vault (conventions), run step 6 only, commit `.engram.json` (`chore: update privacy`) and report. If they are `live`, find the vault and run step 10 only.
 
 ## 1. Check the place
 - The projects root is the current working directory. Run `git rev-parse --show-toplevel` there. If it is inside a git repository, the vault would be committed into that repository: stop and ask whether to use the parent folder instead.
@@ -54,4 +54,10 @@ Build the list from `templates/deny.json`: everything in `always`, plus each `if
 Ask whether commits and PRs made from this folder should carry no Claude attribution. On yes, set `"attribution": {"commit": "", "pr": "", "sessionUrl": false}` in the same settings file.
 
 ## 9. Report
-List what was created or changed, with paths, and the privacy level of each folder. Commit `.engram.json` if it changed after step 4. Next step: `/engram:scan` to scan the projects. Mention that nothing here is pushed anywhere, and that `/engram:setup privacy` changes the levels later.
+List what was created or changed, with paths, and the privacy level of each folder. Commit `.engram.json` if it changed after step 4. Next step: `/engram:scan` to scan the projects. Mention that nothing here is pushed anywhere, that `/engram:setup privacy` changes the levels later, and that `/engram:setup live` adds a live graph to Obsidian.
+
+## 10. Live graph (`live` only)
+An Obsidian plugin that lights up a note in the graph view while Claude reads or writes it; the engram plugin's hook (`hooks/live.sh`) feeds it and does nothing until the plugin is enabled. Never run this step unasked.
+1. Copy `main.js`, `manifest.json` and `styles.css` from `${CLAUDE_SKILL_DIR}/../../obsidian/engram-live/` into `<vault>/.obsidian/plugins/engram-live/` with `cp` (Read and Write if there is no shell). Replace only these three files; keep `data.json`, the user's settings. The folder name must stay `engram-live`, or the hook cannot find it.
+2. Commit them in the vault: `git -C <vault> add .obsidian/plugins/engram-live` and `git -C <vault> commit -m "chore: add the live graph plugin"`.
+3. Tell the user, in the note language: in Obsidian, Settings → Community plugins → turn off Restricted mode and enable "engram live graph", then open the graph view. A note Claude reads lights up in one color, an edited or new note in another; lit notes glow while Claude works, sparks run along their links, the rest dim and a counter shows notes read out of all notes. When Claude finishes its turn, everything fades out slowly. Only Read, Edit and Write light a note; notes seen only through a search are not counted. The plugin's settings hold the colors and timings; the command "Reset the live graph" fades it out at once. Obsidian pauses animations while its window is hidden. Turning the plugin off stops the hook too. Running this step again updates the plugin after an engram update.

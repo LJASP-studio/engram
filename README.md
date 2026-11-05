@@ -8,7 +8,7 @@ An *engram* is the trace a memory leaves in the brain. The vault's structure (fo
 
 The system has two parts:
 
-- **The engine** (this repository): a Claude Code plugin with four skills, templates and two shell helpers. The same engine is installed on every machine.
+- **The engine** (this repository): a Claude Code plugin with four skills, templates, two shell helpers and an optional live graph for Obsidian. The same engine is installed on every machine.
 - **The vault**: a folder of Markdown notes inside your projects folder, one per machine. It stays on that machine in a local git repository with no remote. The engine never pushes anything anywhere.
 
 ```
@@ -94,6 +94,23 @@ Before you run engram on a work computer:
 - **Pause file sync during bulk writes.** OneDrive, Dropbox, Google Drive and iCloud can conflict with a scan that writes hundreds of files at once. Pause sync before `/engram:scan` or a large `/engram:check --fix`, and resume it afterwards.
 - Nothing leaves the machine through engram itself. The vault is a local git repository; no skill adds a remote or pushes. Notes never hold secrets, tokens, `.env` values, customer data or personal data. Notes from one machine never travel to another; a work vault stays on the work computer.
 
+## Live graph
+
+An optional Obsidian plugin that shows Claude's work on the vault in the graph view, for demos and for seeing what Claude actually opened. A note Claude reads lights up in one color, a note it edits or creates in another. Lit notes glow while Claude works and sparks run along their links; the other notes dim, and a counter in the corner shows the notes read out of all notes in the vault ("3 / 372"). When Claude finishes its turn, everything fades out slowly.
+
+Turn it on with `/engram:setup live`, which copies the plugin into `<vault>/.obsidian/plugins/engram-live/`. Then, in Obsidian, open Settings → Community plugins, turn off Restricted mode, enable **engram live graph** and open the graph view. The plugin's settings hold the colors, the fade time, the sparks, the dimming and the counter; the command *Reset the live graph* fades it out at once. To turn it off, disable the plugin.
+
+How it works: this plugin ships a hook (`hooks/live.sh`) that runs in the background after Claude's Read, Edit and Write tools and when a turn stops. If a vault in the project folder, its parent or its grandparent (or one level below one of them) has `.obsidian/plugins/engram-live/live.jsonl`, the hook appends one line to it: the tool, the note's path inside the vault and the session id, or a stop marker. The Obsidian plugin creates that file while it is enabled, reads new lines from it and removes it when it is disabled. Without the file the hook reads its input and exits.
+
+Privacy: nothing goes over the network, in the hook or in the plugin. The hook writes no file contents and no paths outside the vault, prints nothing (so it adds nothing to Claude's context) and stops appending past 1 MB, for example when Obsidian quit without unloading the plugin. The plugin keeps `live.jsonl` out of the vault's git with its own `.gitignore` and empties it on every start.
+
+Limits:
+
+- Only Read, Edit and Write light a note. A note Claude only saw through a search (its `description:` line in a grep) is not lit and not counted, and the routing block often answers from those lines alone, so a question may light nothing at all.
+- The graph renderer is internal to Obsidian and undocumented; the plugin was written against Obsidian 1.15. On a version where it differs, the graph stays as it is and nothing breaks.
+- Desktop Obsidian only, with the default `.obsidian` config folder. Obsidian pauses animations while its window is hidden.
+- The hook needs a POSIX shell, like the other helpers: Git Bash on Windows.
+
 ## Install
 
 Requirements: Claude Code, git. Obsidian is optional (the vault is plain Markdown). The shell helpers need a POSIX shell: built into macOS and Linux, and Git Bash on Windows; without it the skills run the same checks with Claude's own tools and git.
@@ -144,7 +161,7 @@ Some organisations block plugin marketplaces. Fallbacks, in order:
 
 1. **Local marketplace.** `git clone` this repository, then `claude plugin marketplace add ./engram` and `claude plugin install engram@engram`.
 2. **Per session.** Start Claude Code with `claude --plugin-dir path/to/engram`.
-3. **Manual copy.** Copy `skills/setup`, `skills/scan`, `skills/note` and `skills/check` into `~/.claude/skills/` (Windows: `%USERPROFILE%\.claude\skills\`) and `reference/` into `~/.claude/reference/`, keeping both side by side so the skills find `../../reference/conventions.md`. The commands are then `/setup`, `/scan`, `/note` and `/check`; change `/engram:note` to `/note` in the routing block.
+3. **Manual copy.** Copy `skills/setup`, `skills/scan`, `skills/note` and `skills/check` into `~/.claude/skills/` (Windows: `%USERPROFILE%\.claude\skills\`) and `reference/` into `~/.claude/reference/`, keeping both side by side so the skills find `../../reference/conventions.md`. The commands are then `/setup`, `/scan`, `/note` and `/check`; change `/engram:note` to `/note` in the routing block. The live graph hook does not come along this way.
 
 ### Update
 
@@ -160,14 +177,14 @@ Upgrading a vault made with 0.2 or earlier: run `/engram:setup privacy` once to 
 ## Develop
 
 ```sh
-sh tests/run.sh                          # tests for both shell helpers on synthetic vaults
+sh tests/run.sh                          # tests for the shell helpers and the live graph hook on synthetic vaults
 sh skills/check/scripts/lint.sh examples/vault date Daily Home Log
 sh skills/scan/scripts/edited.sh <vault> # notes that hold your edits
 claude plugin validate .                 # manifests
 claude --plugin-dir .                    # try the skills without installing
 ```
 
-`examples/projects/` holds two made-up projects and `examples/vault/` the vault the skills build from them. Bump `version` in `.claude-plugin/plugin.json` for every release.
+`examples/projects/` holds two made-up projects and `examples/vault/` the vault the skills build from them. Bump `version` in `.claude-plugin/plugin.json` for every release, and the same number in `obsidian/engram-live/manifest.json`. The Obsidian plugin is plain JavaScript with no build step; to try a change, copy it into a vault's `.obsidian/plugins/engram-live/` and reload the plugin.
 
 ## Layout
 
@@ -178,6 +195,8 @@ skills/setup/     setup skill and its templates (layout, hub, MOC, status, propo
 skills/scan/      scan skill, the brief each project's subagent gets, and scripts/edited.sh
 skills/note/      note skill
 skills/check/     health check skill and scripts/lint.sh
+hooks/            live graph hook: hooks.json and live.sh
+obsidian/         engram-live, the live graph plugin for Obsidian
 examples/         synthetic sample projects and the vault built from them
 tests/            run.sh
 ```
