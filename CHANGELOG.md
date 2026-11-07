@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0 - 2026-11-07
+
+- Ready to be public: MIT license (`LICENSE`, `license` in `plugin.json`), install steps without the private-repository part, and a note that Windows support has not been tried on a real Windows machine yet.
+- README: a section on what a vault changes, from a 60-question measurement on current models. Cost came out the same with and without the vault; answers about history, decisions and links between projects were more accurate; change-plan answers missed some files. The 46 percent token saving reported in 0.2.0 was measured on the previous model generation and did not hold on current models.
+- No change to the skills, the routing block or the live graph: none of the routing changes measured after 0.4.1 lowered the cost, and the one that raised accuracy did not repeat on a separate question set.
+
 ## 0.4.1 - 2026-11-05
 
 - Live graph shows searches too: notes whose lines a search returned (the Grep tool, or grep and rg run in Bash) glow faintly in their own color, notes Claude opens glow bright, and the counter adds how many notes matched. With description-first routing many questions are answered from the description lines alone, so before this the graph often stayed dark. The hook now also runs after Grep and Bash; it reads only the paths at the start of the output lines, never the text, and still writes nothing outside the vault. Glob is not shown. A setting turns search matches off.

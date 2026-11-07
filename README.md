@@ -1,6 +1,6 @@
 # engram
 
-A portable second brain for [Claude Code](https://code.claude.com). One Obsidian vault per machine, made of small linked notes that say where things live in the code, so Claude reads three short notes instead of crawling a repository.
+A portable second brain for [Claude Code](https://code.claude.com). One Obsidian vault per machine, made of small linked notes that keep what the code does not say (why a decision was made, when something changed, how projects connect) and point to where things live in the code.
 
 An *engram* is the trace a memory leaves in the brain. The vault's structure (folders, hub, log, field names) is always English; the notes themselves can be written in English or Turkish.
 
@@ -43,6 +43,17 @@ tags: [decision]
 ```
 
 The routing block tells Claude to grep the `description:` lines first (the `code:` paths come with them), and to read the hub and a folder index only when nothing matches or the question is broad; then to open at most three notes and jump to the code paths they name. Every extra step is a full model turn, so the shortest path to the right file is also the cheapest.
+
+## What a vault changes
+
+Measured on one real workspace (several projects, about 370 notes): 60 questions asked with and without the vault, each twice, with Claude Sonnet 5.5, and every answer graded against an answer key.
+
+- **Cost: no difference.** Tokens and cost came out about the same with and without the vault (ratio 0.99). Current models find what the code says in a few steps on their own.
+- **More accurate on what the code does not say.** Fully correct answers with and without the vault: history questions 15 and 11 out of 16, decisions 12 and 10 out of 16, questions that span projects 12 and 9 out of 14.
+- **Worse on change plans.** Asked what a change would touch, Claude with the vault trusted the notes and missed some files.
+- **Smaller models catch up.** In a separate run of 20 questions, Haiku 5.5 with the vault answered all 20 fully, as Opus 5.5 did, at about a fortieth of the cost.
+
+An earlier measurement on the previous model generation (13 questions, Opus 5) found 46 percent fewer tokens with the vault; newer models no longer need that help. Limits: one workspace, questions about its owner's own projects, and Claude could not read git history during the test, so in daily use the gap on history questions is likely smaller. Read the numbers as a direction, not a rate.
 
 ## Skills
 
@@ -144,16 +155,7 @@ claude
 
 Then `/engram:setup en` and `/engram:scan` inside Claude Code. Paths in notes always use forward slashes.
 
-### Private repository access
-
-The repository is private, so Claude Code clones it with your own git credentials. With an SSH key that works for github.com, nothing else is needed. Otherwise use HTTPS through the GitHub CLI:
-
-```sh
-gh auth login
-gh auth setup-git
-```
-
-To force HTTPS, set `CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1` (PowerShell: `$env:CLAUDE_CODE_PLUGIN_PREFER_HTTPS = "1"`). A `GITHUB_TOKEN` variable alone is not enough. Updates use the same credentials.
+engram is written to run on Windows with Git Bash, but it has not been tried on a real Windows machine yet. If something breaks there, please open an issue.
 
 ### If marketplaces are blocked
 
@@ -200,3 +202,7 @@ obsidian/         engram-live, the live graph plugin for Obsidian
 examples/         synthetic sample projects and the vault built from them
 tests/            run.sh
 ```
+
+## License
+
+[MIT](LICENSE).
