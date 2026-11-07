@@ -2,6 +2,8 @@
 
 Claude Code forgets your projects between sessions. engram gives it a memory: an Obsidian vault of short, linked notes about why things are the way they are, when they changed and where they live in the code. An engram is the trace a memory leaves in the brain.
 
+<p align="center"><img src="assets/live-graph.gif" alt="The live graph in Obsidian: a vault grows note by note, then Claude answers a question by opening only 3 of 377 notes" width="720"></p>
+
 ## What you get
 
 - Answers about your own history. Ask "why did we move sessions to Redis?" or "when did the export change?" and Claude finds the note, reads the reason and goes straight to the right file.
