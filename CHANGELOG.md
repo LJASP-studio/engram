@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.0 - 2026-11-07
+
+- Easier setup: `/engram:setup` asks everything in one message (note language, vault folder, what Claude may read in each project, files it never reads), each line with a suggestion, so `ok` takes them all. It no longer asks about Claude attribution in commits, which has nothing to do with the vault. Its report is shorter and ends with the next step.
+- New `docs/install.md`: installing from a terminal or inside Claude Code, what setup changes on your machine, Obsidian, updating (and auto-update), removing, Windows and common problems. The README's Get started section is now three numbered steps.
+
 ## 0.5.0 - 2026-11-07
 
 - Ready to be public: MIT license (`LICENSE`, `license` in `plugin.json`), install steps without the private-repository part, and a note that Windows support has not been tried on a real Windows machine yet.

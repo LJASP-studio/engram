@@ -15,14 +15,17 @@ Claude Code forgets your projects between sessions. engram gives it a memory: an
 
 ## Get started
 
-You need Claude Code and git; Obsidian is optional.
+You need Claude Code and git. Obsidian is optional.
 
-```sh
-claude plugin marketplace add muazfurkan/engram
-claude plugin install engram@engram
-```
+1. Install the plugin:
+   ```sh
+   claude plugin marketplace add muazfurkan/engram
+   claude plugin install engram@engram
+   ```
+2. Open Claude Code in the folder that holds your projects (for example `~/code`) and run `/engram:setup`. It asks everything in one message; reply `ok` to take its suggestions.
+3. Run `/engram:scan`. It shows a plan and writes nothing before your OK.
 
-Then start `claude` in the folder that holds your projects and run `/engram:setup en` (or `tr` for Turkish notes) and `/engram:scan`. The scan shows its plan and writes nothing before your OK.
+From then on Claude looks in the vault before it searches the code, and when a task is done it writes down what changed (`/engram:note`, or just ask). Installing from inside Claude Code, updating, removing, Windows and common problems: [docs/install.md](docs/install.md).
 
 ## How it works
 
@@ -53,7 +56,7 @@ I measured it on my own workspace (several projects, about 370 notes) with 60 qu
 
 Each project folder is `full` (docs, code, git history), `structure` (file names only) or `none` (skipped), and `.env` files, keys and credentials are never read. Setup writes these as read-deny rules in `.claude/settings.json`, so they hold in every session. What a skill reads does go to the model, so check your employer's policy before you use engram on work code. Keep the vault in a plain local folder (iCloud Drive on Windows can corrupt files) and pause file sync during a scan.
 
-On Windows the helpers need Git Bash; engram is written for it but has not been tried on a real Windows machine yet, so please open an issue if something breaks.
+On Windows, install Git for Windows first: engram's helpers run in its Git Bash. engram has not been tried on a real Windows machine yet, so please open an issue if something breaks.
 
 ## Develop
 
@@ -63,7 +66,7 @@ claude plugin validate .
 claude --plugin-dir .      # try it without installing
 ```
 
-The note format and every rule are in [reference/conventions.md](reference/conventions.md); `examples/` holds two made-up projects and the vault built from them. Update an install with `claude plugin marketplace update engram` and `claude plugin update engram@engram`.
+The note format and every rule are in [reference/conventions.md](reference/conventions.md); `examples/` holds two made-up projects and the vault built from them.
 
 ## License
 
