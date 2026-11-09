@@ -56,7 +56,7 @@ I measured it on my own workspace (several projects, about 370 notes) with 60 qu
 
 Each project folder is `full` (docs, code, git history), `structure` (file names only) or `none` (skipped), and `.env` files, keys and credentials are never read. Setup writes these as read-deny rules in `.claude/settings.json`, so they hold in every session. What a skill reads does go to the model, so check your employer's policy before you use engram on work code. Keep the vault in a plain local folder (iCloud Drive on Windows can corrupt files) and pause file sync during a scan.
 
-On Windows, install Git for Windows first: engram's helpers run in its Git Bash. engram has not been tried on a real Windows machine yet, so please open an issue if something breaks.
+On Windows, install Git for Windows first: engram's helpers run in its Git Bash.
 
 ## Develop
 
