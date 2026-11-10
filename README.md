@@ -19,7 +19,7 @@ You need Claude Code and git. Obsidian is optional.
 
 1. Install the plugin:
    ```sh
-   claude plugin marketplace add muazfurkan/engram
+   claude plugin marketplace add LJASP-studio/engram
    claude plugin install engram@engram
    ```
 2. Open Claude Code in the folder that holds your projects (for example `~/code`) and run `/engram:setup`. It asks everything in one message; reply `ok` to take its suggestions.

@@ -1,12 +1,12 @@
 {
   "name": "engram",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "A portable second brain for Claude Code: one Obsidian vault per machine, small linked notes that point to code, and four skills to set it up, scan projects, write notes and keep the vault healthy.",
   "author": {
     "name": "muazfurkan",
     "url": "https://github.com/muazfurkan"
   },
-  "repository": "https://github.com/muazfurkan/engram",
+  "repository": "https://github.com/LJASP-studio/engram",
   "license": "MIT",
   "keywords": ["obsidian", "second-brain", "notes", "memory", "knowledge-base"]
 }

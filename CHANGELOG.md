@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.1 - 2026-11-10
+
+- The repository moved to github.com/LJASP-studio/engram. New installs use `claude plugin marketplace add LJASP-studio/engram`. Existing installs and old `muazfurkan/engram` links keep working through GitHub's redirect; nothing else changed.
+
 ## 0.6.0 - 2026-11-07
 
 - Easier setup: `/engram:setup` asks everything in one message (note language, vault folder, what Claude may read in each project, files it never reads), each line with a suggestion, so `ok` takes them all. It no longer asks about Claude attribution in commits, which has nothing to do with the vault. Its report is shorter and ends with the next step.

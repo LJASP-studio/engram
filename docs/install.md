@@ -11,14 +11,14 @@
 From a terminal:
 
 ```sh
-claude plugin marketplace add muazfurkan/engram
+claude plugin marketplace add LJASP-studio/engram
 claude plugin install engram@engram
 ```
 
 Or inside Claude Code:
 
 ```
-/plugin marketplace add muazfurkan/engram
+/plugin marketplace add LJASP-studio/engram
 /plugin install engram@engram
 ```
 
